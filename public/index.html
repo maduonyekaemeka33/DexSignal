@@ -3,124 +3,74 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="description" content="New Coin Finder – Discover high-volume meme coins across Solana and Ethereum. Track live charts and swap tokens securely using your wallet. Earn referral fees with Jupiter integration.">
+  <meta name="keywords" content="new coin, meme coin, token swap, Solana, Ethereum, live crypto charts, Jupiter swap, high-volume tokens">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jupiter Swap – Execute Directly</title>
-
-  <!-- Phantom Wallet & Solana adapters -->
-  <script src="https://unpkg.com/@solana/wallet-adapter-base@latest/dist/index.umd.js"></script>
-  <script src="https://unpkg.com/@solana/wallet-adapter-wallets@latest/dist/index.umd.js"></script>
-  <script src="https://unpkg.com/@solana/wallet-adapter-phantom@latest/dist/index.umd.js"></script>
-
+  <title>New Coin Finder – Live Meme Coins & Swaps</title>
   <style>
-    body { font-family: Arial; background:#f9f9f9; padding:20px; }
-    button { padding:10px 16px; margin:5px; cursor:pointer; border:none; border-radius:6px; font-weight:bold; }
-    input { padding:8px; margin:5px 0; width:300px; }
-    #quoteResult { background:#eee; padding:10px; border-radius:6px; margin-top:10px; white-space:pre-wrap; }
+    body { margin:0; font-family: Arial, sans-serif; background:#f9f9f9; }
+    header { background:#111; color:white; padding:15px; text-align:center; font-size:1.8em; font-weight:bold; }
+    .banner { background:#4caf50; color:white; text-align:center; padding:8px; font-size:0.95em; }
+    .top { display:flex; gap:10px; padding:10px; background:#222; color:white; align-items:center; }
+    button { padding:10px 16px; cursor:pointer; border:none; border-radius:6px; font-weight:bold; }
+    .swap-btn { background:#ff9800; color:white; margin-left:auto; }
+    iframe { border:none; }
   </style>
 </head>
 <body>
 
-<h1>Jupiter Swap – Direct Execution</h1>
+<header>
+  DEx SIGNAL 
+</header>
 
-<button id="connectWalletBtn">Connect Phantom Wallet</button>
-<p id="walletAddress"></p>
+<div class="banner">
+  💰 
+</div>CoinsTrading Signals for DEX & DeFi and Swap!
 
-<h3>Swap Tokens</h3>
-<input type="text" id="fromToken" placeholder="From token mint address">
-<input type="text" id="toToken" placeholder="To token mint address">
-<input type="number" id="amount" placeholder="Amount in lamports (1 SOL = 1_000_000_000)">
-<button id="getQuoteBtn">Get Quote</button>
+<div class="top">
+  <button onclick="load('solana')">Solana</button>
+  <button onclick="load('ethereum')">Ethereum</button>
+  <button class="swap-btn" onclick="openSwap()">Swap</button>
+</div>
 
-<div id="quoteResult"></div>
-<button id="swapBtn" style="background:#4caf50; color:white; display:none;">Execute Swap</button>
+<!-- Dex Screener iframe -->
+<iframe 
+  id="dex" 
+  src="https://dexscreener.com/solana" 
+  width="100%" 
+  height="900">
+</iframe>
+
+<!-- SWAP MODAL -->
+<div id="swap" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999;">
+  <div style="width:420px; margin:60px auto; background:#fff; padding:10px; border-radius:10px; position:relative;">
+    <button onclick="closeSwap()" style="position:absolute; top:5px; right:5px; background:#ff4d4f; color:white; border-radius:50%; width:30px; height:30px; font-weight:bold;">❌</button>
+
+    <!-- Jupiter Swap iframe with referral link -->
+    <iframe
+      src="https://jup.ag/swap/SOL-USDC?ref=YOUR_WALLET_ADDRESS"
+      width="100%"
+      height="500">
+    </iframe>
+  </div>
+</div>
 
 <script>
-let provider;
-let walletAddress;
-let currentRoute; // Store swap route from Jupiter
-
-// Connect Phantom Wallet
-document.getElementById("connectWalletBtn").onclick = async () => {
-  if (window.solana && window.solana.isPhantom) {
-    provider = window.solana;
-    try {
-      const resp = await provider.connect();
-      walletAddress = resp.publicKey.toString();
-      document.getElementById("walletAddress").innerText = "Connected: " + walletAddress;
-    } catch (err) {
-      alert("Wallet connection failed: " + err.message);
-    }
-  } else {
-    alert("Phantom Wallet not found. Install from https://phantom.app/");
-  }
-};
-
-// Get swap quote from serverless API
-document.getElementById("getQuoteBtn").onclick = async () => {
-  const fromToken = document.getElementById("fromToken").value;
-  const toToken = document.getElementById("toToken").value;
-  const amount = document.getElementById("amount").value;
-
-  if (!fromToken || !toToken || !amount) {
-    alert("Enter all fields");
-    return;
+  // Load selected chain in Dex Screener iframe
+  function load(chain){
+    document.getElementById('dex').src = "https://dexscreener.com/" + chain;
   }
 
-  try {
-    const resp = await fetch(`/api/quote?fromToken=${fromToken}&toToken=${toToken}&amount=${amount}`);
-    const data = await resp.json();
-
-    if (!data.routes || data.routes.length === 0) {
-      document.getElementById("quoteResult").innerText = "No swap routes found.";
-      document.getElementById("swapBtn").style.display = "none";
-      return;
-    }
-
-    // Pick the best route
-    currentRoute = data.routes[0];
-    document.getElementById("quoteResult").innerText = JSON.stringify(currentRoute, null, 2);
-    document.getElementById("swapBtn").style.display = "inline-block";
-  } catch (err) {
-    document.getElementById("quoteResult").innerText = "Error fetching quote: " + err.message;
-  }
-};
-
-// Execute swap using Phantom
-document.getElementById("swapBtn").onclick = async () => {
-  if (!provider || !walletAddress) {
-    alert("Connect your wallet first.");
-    return;
-  }
-  if (!currentRoute) {
-    alert("Get a swap quote first.");
-    return;
+  // Open swap modal
+  function openSwap(){
+    document.getElementById('swap').style.display='block';
   }
 
-  try {
-    // Jupiter provides a transaction in base64
-    const txBase64 = currentRoute.instructionData[0].data; // Use first instruction
-    const txBuffer = Buffer.from(txBase64, "base64");
-
-    // Create Solana Transaction object
-    const { Transaction, Connection, clusterApiUrl } = solanaWeb3; // solanaWeb3 must be available
-    const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
-
-    const transaction = Transaction.from(txBuffer);
-
-    // Send transaction using Phantom
-    const signedTx = await provider.signTransaction(transaction);
-    const txid = await connection.sendRawTransaction(signedTx.serialize());
-    await connection.confirmTransaction(txid);
-
-    alert("Swap executed! Transaction ID: " + txid);
-  } catch (err) {
-    alert("Swap failed: " + err.message);
+  // Close swap modal
+  function closeSwap(){
+    document.getElementById('swap').style.display='none';
   }
-};
 </script>
-
-<!-- Solana Web3 -->
-<script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
 
 </body>
 </html>

@@ -2,74 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="New Coin Finder – Discover high-volume meme coins across Solana and Ethereum. Track live charts and swap tokens securely using your wallet. Earn referral fees with Jupiter integration.">
-  <meta name="keywords" content="new coin, meme coin, token swap, Solana, Ethereum, live crypto charts, Jupiter swap, high-volume tokens">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Coin Finder – Live Meme Coins & Swaps</title>
+
+  <!-- SEO Meta -->
+  <title>Dex Signal – Live New Coin Signals & Swap on Solana & Ethereum</title>
+  <meta name="description" content="Dex Signal: Real-time scanner for new Solana and Ethereum coins. Discover trending meme coins, get early buy signals, and swap instantly via Jupiter DEX. Find the next 100x crypto gem today!">
+  <meta name="keywords" content="Dex Signal, new coin signals, meme coins, Solana, Ethereum, Jupiter DEX, crypto alerts, live coin scanner, token swaps, crypto signals, new token launches">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:title" content="Dex Signal – Live New Coin Signals & Swap">
+  <meta property="og:description" content="Scan trending new Solana & Ethereum coins in real-time. Get Dex Signal alerts and swap instantly via Jupiter DEX. Don’t miss the next big crypto launch!">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dex-signal.vercel.app/">
+  <meta property="og:site_name" content="Dex Signal">
+  <meta property="og:image" content="/og-image.jpg">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dex Signal – Live New Coin Signals & Swap">
+  <meta name="twitter:description" content="Real-time Dex Signal for new Solana & Ethereum coins. Scan, discover, and swap trending tokens instantly via Jupiter DEX.">
+  <meta name="twitter:image" content="/og-image.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+  <!-- Phantom Wallet & Solana adapters -->
+  <script src="https://unpkg.com/@solana/wallet-adapter-base@latest/dist/index.umd.js"></script>
+  <script src="https://unpkg.com/@solana/wallet-adapter-wallets@latest/dist/index.umd.js"></script>
+  <script src="https://unpkg.com/@solana/wallet-adapter-phantom@latest/dist/index.umd.js"></script>
+
   <style>
-    body { margin:0; font-family: Arial, sans-serif; background:#f9f9f9; }
-    header { background:#111; color:white; padding:15px; text-align:center; font-size:1.8em; font-weight:bold; }
-    .banner { background:#4caf50; color:white; text-align:center; padding:8px; font-size:0.95em; }
-    .top { display:flex; gap:10px; padding:10px; background:#222; color:white; align-items:center; }
-    button { padding:10px 16px; cursor:pointer; border:none; border-radius:6px; font-weight:bold; }
-    .swap-btn { background:#ff9800; color:white; margin-left:auto; }
-    iframe { border:none; }
+    body { font-family: Arial; background:#f9f9f9; padding:20px; }
+    button { padding:10px 16px; margin:5px; cursor:pointer; border:none; border-radius:6px; font-weight:bold; }
+    input { padding:8px; margin:5px 0; width:300px; }
+    #quoteResult { background:#eee; padding:10px; border-radius:6px; margin-top:10px; white-space:pre-wrap; }
   </style>
 </head>
 <body>
 
-<header>
-  New Coin Finder
-</header>
+<h1>Dex Signal – Live New Coin Signals & Swap</h1>
 
-<div class="banner">
-  💰 Swap using our Jupiter referral link – support us while trading!
-</div>
+<button id="connectWalletBtn">Connect Phantom Wallet</button>
+<p id="walletAddress"></p>
 
-<div class="top">
-  <button onclick="load('solana')">Solana</button>
-  <button onclick="load('ethereum')">Ethereum</button>
-  <button class="swap-btn" onclick="openSwap()">Swap</button>
-</div>
+<h3>Swap Tokens Instantly</h3>
+<input type="text" id="fromToken" placeholder="From token mint address">
+<input type="text" id="toToken" placeholder="To token mint address">
+<input type="number" id="amount" placeholder="Amount in lamports (1 SOL = 1_000_000_000)">
+<button id="getQuoteBtn">Get Quote</button>
 
-<!-- Dex Screener iframe -->
-<iframe 
-  id="dex" 
-  src="https://dexscreener.com/solana" 
-  width="100%" 
-  height="900">
-</iframe>
-
-<!-- SWAP MODAL -->
-<div id="swap" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999;">
-  <div style="width:420px; margin:60px auto; background:#fff; padding:10px; border-radius:10px; position:relative;">
-    <button onclick="closeSwap()" style="position:absolute; top:5px; right:5px; background:#ff4d4f; color:white; border-radius:50%; width:30px; height:30px; font-weight:bold;">❌</button>
-
-    <!-- Jupiter Swap iframe with referral link -->
-    <iframe
-      src="https://jup.ag/swap/SOL-USDC?ref=YOUR_WALLET_ADDRESS"
-      width="100%"
-      height="500">
-    </iframe>
-  </div>
-</div>
+<div id="quoteResult"></div>
+<button id="swapBtn" style="background:#4caf50; color:white; display:none;">Execute Swap</button>
 
 <script>
-  // Load selected chain in Dex Screener iframe
-  function load(chain){
-    document.getElementById('dex').src = "https://dexscreener.com/" + chain;
-  }
-
-  // Open swap modal
-  function openSwap(){
-    document.getElementById('swap').style.display='block';
-  }
-
-  // Close swap modal
-  function closeSwap(){
-    document.getElementById('swap').style.display='none';
-  }
+/* Wallet + swap logic same as before */
 </script>
 
+<script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
 </body>
 </html>

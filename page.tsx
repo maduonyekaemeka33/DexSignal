@@ -144,5 +144,5 @@ export default function HomePage() {
         © {new Date().getFullYear()} Dex Signal · Not financial advice
       </footer>
     </main>
-  );
+  ); 
                                         }

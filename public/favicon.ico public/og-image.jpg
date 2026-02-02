@@ -1,0 +1,10 @@
+// In layout.tsx
+icons: {
+  icon: '/favicon.ico'
+},
+openGraph: {
+  images: [{ url: '/og-image.jpg', width: 1200, height: 630 }]
+},
+twitter: {
+  images: ['/og-image.jpg']
+}

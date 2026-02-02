@@ -1,31 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- SEO Meta -->
-  <title>Dex Signal – Live New Coin Signals & Swap on Solana & Ethereum</title>
-  <meta name="description" content="Dex Signal: Real-time scanner for new Solana and Ethereum coins. Discover trending meme coins, get early buy signals, and swap instantly via Jupiter DEX. Find the next 100x crypto gem today!">
-  <meta name="keywords" content="Dex Signal, new coin signals, meme coins, Solana, Ethereum, Jupiter DEX, crypto alerts, live coin scanner, token swaps, crypto signals, new token launches">
-  <meta name="robots" content="index, follow">
-
-  <!-- Open Graph / Social Sharing -->
-  <meta property="og:title" content="Dex Signal – Live New Coin Signals & Swap">
-  <meta property="og:description" content="Scan trending new Solana & Ethereum coins in real-time. Get Dex Signal alerts and swap instantly via Jupiter DEX. Don’t miss the next big crypto launch!">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://dex-signal.vercel.app/">
-  <meta property="og:site_name" content="Dex Signal">
-  <meta property="og:image" content="/og-image.jpg">
-
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Dex Signal – Live New Coin Signals & Swap">
-  <meta name="twitter:description" content="Real-time Dex Signal for new Solana & Ethereum coins. Scan, discover, and swap trending tokens instantly via Jupiter DEX.">
-  <meta name="twitter:image" content="/og-image.jpg">
-
-  <!-- Favicon -->
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <title>Jupiter Swap – Execute Directly</title>
 
   <!-- Phantom Wallet & Solana adapters -->
   <script src="https://unpkg.com/@solana/wallet-adapter-base@latest/dist/index.umd.js"></script>
@@ -41,12 +20,12 @@
 </head>
 <body>
 
-<h1>Dex Signal – Live New Coin Signals & Swap</h1>
+<h1>Jupiter Swap – Direct Execution</h1>
 
 <button id="connectWalletBtn">Connect Phantom Wallet</button>
 <p id="walletAddress"></p>
 
-<h3>Swap Tokens Instantly</h3>
+<h3>Swap Tokens</h3>
 <input type="text" id="fromToken" placeholder="From token mint address">
 <input type="text" id="toToken" placeholder="To token mint address">
 <input type="number" id="amount" placeholder="Amount in lamports (1 SOL = 1_000_000_000)">
@@ -56,9 +35,92 @@
 <button id="swapBtn" style="background:#4caf50; color:white; display:none;">Execute Swap</button>
 
 <script>
-/* Wallet + swap logic same as before */
+let provider;
+let walletAddress;
+let currentRoute; // Store swap route from Jupiter
+
+// Connect Phantom Wallet
+document.getElementById("connectWalletBtn").onclick = async () => {
+  if (window.solana && window.solana.isPhantom) {
+    provider = window.solana;
+    try {
+      const resp = await provider.connect();
+      walletAddress = resp.publicKey.toString();
+      document.getElementById("walletAddress").innerText = "Connected: " + walletAddress;
+    } catch (err) {
+      alert("Wallet connection failed: " + err.message);
+    }
+  } else {
+    alert("Phantom Wallet not found. Install from https://phantom.app/");
+  }
+};
+
+// Get swap quote from serverless API
+document.getElementById("getQuoteBtn").onclick = async () => {
+  const fromToken = document.getElementById("fromToken").value;
+  const toToken = document.getElementById("toToken").value;
+  const amount = document.getElementById("amount").value;
+
+  if (!fromToken || !toToken || !amount) {
+    alert("Enter all fields");
+    return;
+  }
+
+  try {
+    const resp = await fetch(`/api/quote?fromToken=${fromToken}&toToken=${toToken}&amount=${amount}`);
+    const data = await resp.json();
+
+    if (!data.routes || data.routes.length === 0) {
+      document.getElementById("quoteResult").innerText = "No swap routes found.";
+      document.getElementById("swapBtn").style.display = "none";
+      return;
+    }
+
+    // Pick the best route
+    currentRoute = data.routes[0];
+    document.getElementById("quoteResult").innerText = JSON.stringify(currentRoute, null, 2);
+    document.getElementById("swapBtn").style.display = "inline-block";
+  } catch (err) {
+    document.getElementById("quoteResult").innerText = "Error fetching quote: " + err.message;
+  }
+};
+
+// Execute swap using Phantom
+document.getElementById("swapBtn").onclick = async () => {
+  if (!provider || !walletAddress) {
+    alert("Connect your wallet first.");
+    return;
+  }
+  if (!currentRoute) {
+    alert("Get a swap quote first.");
+    return;
+  }
+
+  try {
+    // Jupiter provides a transaction in base64
+    const txBase64 = currentRoute.instructionData[0].data; // Use first instruction
+    const txBuffer = Buffer.from(txBase64, "base64");
+
+    // Create Solana Transaction object
+    const { Transaction, Connection, clusterApiUrl } = solanaWeb3; // solanaWeb3 must be available
+    const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+
+    const transaction = Transaction.from(txBuffer);
+
+    // Send transaction using Phantom
+    const signedTx = await provider.signTransaction(transaction);
+    const txid = await connection.sendRawTransaction(signedTx.serialize());
+    await connection.confirmTransaction(txid);
+
+    alert("Swap executed! Transaction ID: " + txid);
+  } catch (err) {
+    alert("Swap failed: " + err.message);
+  }
+};
 </script>
 
+<!-- Solana Web3 -->
 <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+
 </body>
 </html>

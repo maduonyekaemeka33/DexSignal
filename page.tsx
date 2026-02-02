@@ -6,14 +6,19 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 // =====================
 // TYPES
 // =====================
+interface Token {
+  symbol: string;
+  name: string;
+}
+
 interface Pair {
   pairAddress: string;
-  baseToken: { symbol: string; name: string };
-  priceUsd: string;
-  volume: { h24: number };
-  liquidity: { usd: number };
-  chainId: string;
-  pairCreatedAt: number;
+  baseToken: Token;
+  priceUsd?: string; // optional in case API returns undefined
+  volume?: { h24?: number };
+  liquidity?: { usd?: number };
+  chainId?: string;
+  pairCreatedAt: number; // assume milliseconds; if API returns seconds, multiply by 1000
 }
 
 // =====================
@@ -28,11 +33,16 @@ export default function HomePage() {
   // FETCH DEXSCREENER
   // ---------------------
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchPairs() {
       try {
         const res = await fetch(`https://api.dexscreener.com/latest/dex/pairs/${chain}`);
         const data = await res.json();
-        setPairs(data.pairs || []);
+
+        if (!data || !Array.isArray(data.pairs)) return;
+
+        if (isMounted) setPairs(data.pairs);
       } catch (err) {
         console.error('Failed to fetch pairs:', err);
       }
@@ -40,30 +50,36 @@ export default function HomePage() {
 
     fetchPairs();
     const interval = setInterval(fetchPairs, 30000); // refresh every 30s
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [chain]);
 
   // ---------------------
   // SORT + FILTER
   // ---------------------
   const filtered = useMemo(() => {
-    let list = [...pairs];
+    const list = [...pairs];
 
-    if (sort === 'volume') list.sort((a, b) => b.volume.h24 - a.volume.h24);
-    if (sort === 'liquidity') list.sort((a, b) => b.liquidity.usd - a.liquidity.usd);
+    if (sort === 'volume') list.sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0));
+    if (sort === 'liquidity') list.sort((a, b) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0));
     if (sort === 'age') list.sort((a, b) => b.pairCreatedAt - a.pairCreatedAt);
 
     return list.slice(0, 25);
   }, [pairs, sort]);
 
+  // ---------------------
+  // RENDER
+  // ---------------------
   return (
     <main className="min-h-screen bg-black text-white">
       {/* HEADER */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
         <h1 className="text-xl font-bold">Dex Signal</h1>
         <div className="flex items-center gap-3">
-          <a href="https://x.com" target="_blank" className="text-gray-400 hover:text-white">X</a>
-          <a href="https://t.me" target="_blank" className="text-gray-400 hover:text-white">Telegram</a>
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">X</a>
+          <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">Telegram</a>
           <WalletMultiButton className="!bg-green-500 !text-black" />
         </div>
       </header>
@@ -72,7 +88,7 @@ export default function HomePage() {
       <section className="px-6 py-6 flex flex-wrap gap-3 items-center">
         <select
           value={chain}
-          onChange={(e) => setChain(e.target.value as any)}
+          onChange={(e) => setChain(e.target.value as 'solana' | 'ethereum')}
           className="bg-neutral-900 border border-neutral-800 rounded-md px-3 py-2"
         >
           <option value="solana">Solana</option>
@@ -81,7 +97,7 @@ export default function HomePage() {
 
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value as any)}
+          onChange={(e) => setSort(e.target.value as 'volume' | 'liquidity' | 'age')}
           className="bg-neutral-900 border border-neutral-800 rounded-md px-3 py-2"
         >
           <option value="volume">Sort by Volume</option>
@@ -107,25 +123,30 @@ export default function HomePage() {
             </thead>
             <tbody>
               {filtered.map((p) => {
-                const ageMin = Math.floor((Date.now() - p.pairCreatedAt) / 60000);
-                const lowLiq = p.liquidity.usd < 50000;
+                const ageMin = Math.floor((Date.now() - p.pairCreatedAt) / 60000); // milliseconds
+                const lowLiq = (p.liquidity?.usd || 0) < 50000;
                 return (
                   <tr key={p.pairAddress} className="border-t border-neutral-800 hover:bg-neutral-900">
                     <td className="p-3 font-semibold">
                       {p.baseToken.symbol}
                       {ageMin < 60 && <span className="ml-2 text-green-400">🔥 NEW</span>}
                     </td>
-                    <td className="p-3">${Number(p.priceUsd).toFixed(6)}</td>
-                    <td className="p-3">${p.volume.h24.toLocaleString()}</td>
-                    <td className="p-3">${p.liquidity.usd.toLocaleString()}</td>
+                    <td className="p-3">${Number(p.priceUsd || 0).toFixed(6)}</td>
+                    <td className="p-3">${(p.volume?.h24 || 0).toLocaleString()}</td>
+                    <td className="p-3">${(p.liquidity?.usd || 0).toLocaleString()}</td>
                     <td className="p-3">{ageMin}m</td>
                     <td className="p-3">
                       {lowLiq ? <span className="text-red-400">Low LP</span> : <span className="text-green-400">OK</span>}
                     </td>
                     <td className="p-3">
                       <a
-                        href={`https://jup.ag/swap/${p.baseToken.symbol}-SOL`}
+                        href={
+                          chain === 'solana'
+                            ? `https://jup.ag/swap/${p.baseToken.symbol}-SOL`
+                            : `https://app.uniswap.org/#/swap?inputCurrency=${p.baseToken.symbol}&outputCurrency=ETH`
+                        }
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="bg-green-500 text-black px-3 py-1 rounded-md"
                       >
                         Swap
@@ -144,5 +165,5 @@ export default function HomePage() {
         © {new Date().getFullYear()} Dex Signal · Not financial advice
       </footer>
     </main>
-  ); 
-                                        }
+  );
+                    }

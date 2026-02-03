@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,70 +6,12 @@
   <meta name="keywords" content="new coin, meme coin, token swap, Solana, Ethereum, live crypto charts, Jupiter swap, high-volume tokens">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>New Coin Finder – Live Meme Coins & Swaps</title>
-  <style>
-    body { margin:0; font-family: Arial, sans-serif; background:#f9f9f9; }
-    header { background:#111; color:white; padding:15px; text-align:center; font-size:1.8em; font-weight:bold; }
-    .banner { background:#4caf50; color:white; text-align:center; padding:8px; font-size:0.95em; }
-    .top { display:flex; gap:10px; padding:10px; background:#222; color:white; align-items:center; }
-    button { padding:10px 16px; cursor:pointer; border:none; border-radius:6px; font-weight:bold; }
-    .swap-btn { background:#ff9800; color:white; margin-left:auto; }
-    iframe { border:none; }
-  </style>
 </head>
 <body>
-
-<header>
-  DEx SIGNAL 
-</header>
-
-<div class="banner">
-  💰 
-</div>CoinsTrading Signals for DEX & DeFi and Swap!
-
-<div class="top">
-  <button onclick="load('solana')">Solana</button>
-  <button onclick="load('ethereum')">Ethereum</button>
-  <button class="swap-btn" onclick="openSwap()">Swap</button>
-</div>
-
-<!-- Dex Screener iframe -->
-<iframe 
-  id="dex" 
-  src="https://dexscreener.com/solana" 
-  width="100%" 
-  height="900">
-</iframe>
-
-<!-- SWAP MODAL -->
-<div id="swap" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999;">
-  <div style="width:420px; margin:60px auto; background:#fff; padding:10px; border-radius:10px; position:relative;">
-    <button onclick="closeSwap()" style="position:absolute; top:5px; right:5px; background:#ff4d4f; color:white; border-radius:50%; width:30px; height:30px; font-weight:bold;">❌</button>
-
-    <!-- Jupiter Swap iframe with referral link -->
-    <iframe
-      src="https://jup.ag/swap/SOL-USDC?ref=YOUR_WALLET_ADDRESS"
-      width="100%"
-      height="500">
-    </iframe>
-  </div>
-</div>
-
-<script>
-  // Load selected chain in Dex Screener iframe
-  function load(chain){
-    document.getElementById('dex').src = "https://dexscreener.com/" + chain;
-  }
-
-  // Open swap modal
-  function openSwap(){
-    document.getElementById('swap').style.display='block';
-  }
-
-  // Close swap modal
-  function closeSwap(){
-    document.getElementById('swap').style.display='none';
-  }
-</script>
-
+  <!-- React root mount -->
+  <div id="root"></div>
+  
+  <!-- React entry script -->
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

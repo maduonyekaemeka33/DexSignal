@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="description" content="New Coin Finder – Discover high-volume meme coins across Solana and Ethereum. Track live charts and swap tokens securely using your wallet. Earn referral fees with Jupiter integration.">
-  <meta name="keywords" content="new coin, meme coin, token swap, Solana, Ethereum, live crypto charts, Jupiter swap, high-volume tokens">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Coin Finder – Live Meme Coins & Swaps</title>
-</head>
-<body>
-  <!-- React root mount -->
-  <div id="root"></div>
-  
-  <!-- React entry script -->
-  <script type="module" src="/src/main.jsx"></script>
-</body>
-</html>
+import React from "react";
+import ReactDOM from "react-dom/client";
+import MemeCoinDashboard from "./components/MemeCoinDashboard";
+import DexScreenerIframe from "./components/DexScreenerIframe";
+import "./index.css";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <MemeCoinDashboard />
+    <DexScreenerIframe />
+  </React.StrictMode>
+);

@@ -1,36 +1,78 @@
-<script src="https://terminal.jup.ag/main-v2.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="New Coin Finder – Discover high-volume meme coins across Solana and Ethereum. Track live charts and swap tokens securely using your wallet. Earn referral fees with Jupiter integration.">
+  <meta name="keywords" content="new coin, meme coin, token swap, Solana, Ethereum, live crypto charts, Jupiter swap, high-volume tokens">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Coin Finder – Live Meme Coins & Swaps</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#f9f9f9; }
+    header { background:#111; color:white; padding:15px; text-align:center; font-size:1.8em; font-weight:bold; }
+    .banner { background:#4caf50; color:white; text-align:center; padding:8px; font-size:0.95em; }
+    .top { display:flex; gap:10px; padding:10px; background:#222; color:white; align-items:center; }
+    button { padding:10px 16px; cursor:pointer; border:none; border-radius:6px; font-weight:bold; }
+    .swap-btn { background:#ff9800; color:white; margin-left:auto; }
+    iframe { border:none; }
+  </style>
+</head>
+<body>
 
+<header>
+  DEx SIGNAL 
+</header>
+
+<div class="banner">
+  💰 
+</div>CoinsTrading Signals for DEX & DeFi and Swap!
+
+<div class="top">
+  <button onclick="load('solana')">Solana</button>
+  <button onclick="load('ethereum')">Ethereum</button>
+  <button class="swap-btn" onclick="openSwap()">Swap</button>
+</div>
+
+<!-- Dex Screener iframe -->
+<iframe 
+  id="dex" 
+  src="https://dexscreener.com/solana" 
+  width="100%" 
+  height="900">
+</iframe>
+
+<!-- SWAP MODAL -->
 <div id="swap" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999;">
-  <div style="width:420px; margin:60px auto; background:#fff; border-radius:12px; position:relative; min-height: 560px;">
-    <button onclick="closeSwap()" style="position:absolute; top:-15px; right:-15px; background:#ff4d4f; color:white; border-radius:50%; width:35px; height:35px; font-weight:bold; border:2px solid white; cursor:pointer; z-index:1000;">X</button>
-    
-    <div id="integrated-terminal"></div>
+  <div style="width:420px; margin:60px auto; background:#fff; padding:10px; border-radius:10px; position:relative;">
+    <button onclick="closeSwap()" style="position:absolute; top:5px; right:5px; background:#ff4d4f; color:white; border-radius:50%; width:30px; height:30px; font-weight:bold;">❌</button>
+
+    <!-- Jupiter Swap iframe with referral link -->
+    <iframe
+      src="https://jup.ag/swap/SOL-USDC?ref=YOUR_WALLET_ADDRESS"
+      width="100%"
+      height="500">
+    </iframe>
   </div>
 </div>
 
 <script>
-  function openSwap() {
-    document.getElementById('swap').style.display = 'block';
-    
-    // Initialize Jupiter Terminal
-    window.Jupiter.init({
-      displayMode: "integrated",
-      integratedTargetId: "integrated-terminal",
-      endpoint: "https://api.mainnet-beta.solana.com", // Or your custom RPC
-      strictTokenList: false,
-      formProps: {
-        fixedOutputMint: false,
-        initialInputMint: "So11111111111111111111111111111111111111112", // SOL
-        initialOutputMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
-      },
-    });
+  // Load selected chain in Dex Screener iframe
+  function load(chain){
+    document.getElementById('dex').src = "https://dexscreener.com/" + chain;
   }
 
-  function closeSwap() {
-    document.getElementById('swap').style.display = 'none';
+  // Open swap modal
+  function openSwap(){
+    document.getElementById('swap').style.display='block';
   }
 
-  function load(chain) {
-    document.getElementById('dex').src = "https://dexscreener.com/" + chain + "?embed=1&theme=dark";
+  // Close swap modal
+  function closeSwap(){
+    document.getElementById('swap').style.display='none';
   }
 </script>
+
+</body>
+</html>
+
+
+

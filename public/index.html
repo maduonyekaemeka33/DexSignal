@@ -1,13 +1,36 @@
+<script src="https://terminal.jup.ag/main-v2.js"></script>
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Dex Signal</title>
-  </head>
-  <body>
-    <div id="root"></div>
+<div id="swap" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999;">
+  <div style="width:420px; margin:60px auto; background:#fff; border-radius:12px; position:relative; min-height: 560px;">
+    <button onclick="closeSwap()" style="position:absolute; top:-15px; right:-15px; background:#ff4d4f; color:white; border-radius:50%; width:35px; height:35px; font-weight:bold; border:2px solid white; cursor:pointer; z-index:1000;">X</button>
     
-    <script type="module" src="/src/main.jsx"></script> 
-  </body>
-</html>
+    <div id="integrated-terminal"></div>
+  </div>
+</div>
+
+<script>
+  function openSwap() {
+    document.getElementById('swap').style.display = 'block';
+    
+    // Initialize Jupiter Terminal
+    window.Jupiter.init({
+      displayMode: "integrated",
+      integratedTargetId: "integrated-terminal",
+      endpoint: "https://api.mainnet-beta.solana.com", // Or your custom RPC
+      strictTokenList: false,
+      formProps: {
+        fixedOutputMint: false,
+        initialInputMint: "So11111111111111111111111111111111111111112", // SOL
+        initialOutputMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
+      },
+    });
+  }
+
+  function closeSwap() {
+    document.getElementById('swap').style.display = 'none';
+  }
+
+  function load(chain) {
+    document.getElementById('dex').src = "https://dexscreener.com/" + chain + "?embed=1&theme=dark";
+  }
+</script>

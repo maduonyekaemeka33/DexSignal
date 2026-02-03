@@ -42,7 +42,6 @@ function MemeCoinDashboard() {
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center text-neon">Meme Coin Dashboard</h1>
 
-      {/* Live Prices */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {coins.map((coin) => (
           <div key={coin.id} className="bg-gray-900 p-4 rounded-lg shadow-lg">
@@ -60,7 +59,6 @@ function MemeCoinDashboard() {
         ))}
       </div>
 
-      {/* Profit Simulator */}
       <div className="bg-gray-900 p-6 rounded-lg shadow-lg mb-8">
         <h2 className="text-2xl font-bold mb-4">Profit Simulator</h2>
         <div className="mb-4">

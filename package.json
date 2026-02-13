@@ -1,5 +1,5 @@
 {
-  "name": "dexsignal",
+  "name": "dex-gecko",
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "axios": "^1.5.0",
-    "react-icons": "^4.10.1"
+    "react-icons": "^4.10.1",
+    "ethers": "^6.13.4",
+    "@walletconnect/ethereum-provider": "^2.17.0",
+    "@walletconnect/modal": "^2.7.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "@vitejs/plugin-react": "^4.3.0"
   }
 }

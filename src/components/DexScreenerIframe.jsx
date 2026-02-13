@@ -1,80 +1,98 @@
 import React, { useState } from "react";
 
+const chains = [
+  { id: "solana", label: "Solana" },
+  { id: "ethereum", label: "Ethereum" },
+  { id: "bsc", label: "BNB Chain" },
+  { id: "polygon", label: "Polygon" },
+  { id: "arbitrum", label: "Arbitrum" },
+  { id: "base", label: "Base" },
+];
+
+const styles = {
+  container: {
+    animation: "fadeIn 0.3s ease-out",
+  },
+  title: {
+    fontSize: "24px",
+    fontWeight: "800",
+    marginBottom: "20px",
+    textAlign: "center",
+    color: "var(--foreground)",
+  },
+  titleAccent: {
+    color: "var(--primary)",
+  },
+  chainBar: {
+    display: "flex",
+    gap: "8px",
+    justifyContent: "center",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+  },
+  chainBtn: {
+    padding: "8px 16px",
+    borderRadius: "8px",
+    border: "1px solid var(--border)",
+    background: "var(--background-card)",
+    color: "var(--foreground-muted)",
+    fontSize: "13px",
+    fontWeight: "500",
+    cursor: "pointer",
+    transition: "all 0.15s",
+  },
+  chainBtnActive: {
+    background: "var(--primary-muted)",
+    borderColor: "var(--primary)",
+    color: "var(--primary)",
+    fontWeight: "600",
+  },
+  iframeWrapper: {
+    borderRadius: "var(--radius)",
+    overflow: "hidden",
+    border: "1px solid var(--border)",
+  },
+};
+
 function DexScreenerIframe() {
   const [chain, setChain] = useState("solana");
-  const [showSwap, setShowSwap] = useState(false);
 
   return (
-    <div className="mb-10">
-      <h2 className="text-2xl font-bold mb-4 text-center text-neon">
-        DexScreener Live Charts
+    <div style={styles.container}>
+      <h2 style={styles.title}>
+        Live <span style={styles.titleAccent}>Charts</span>
       </h2>
 
-      <div className="flex gap-2 justify-center mb-4">
-        <button onClick={() => setChain("solana")} className="px-4 py-2 bg-gray-800 text-white rounded">
-          Solana
-        </button>
-        <button onClick={() => setChain("ethereum")} className="px-4 py-2 bg-gray-800 text-white rounded">
-          Ethereum
-        </button>
-        <button onClick={() => setShowSwap(true)} className="px-4 py-2 bg-green-500 text-black rounded">
-          Swap
-        </button>
-      </div>
-
-      <iframe
-        id="dex"
-        src={`https://dexscreener.com/${chain}`}
-        width="100%"
-        height="700"
-        className="rounded-lg shadow-lg"
-      ></iframe>
-
-      {showSwap && (
-        <div
-          style={{
-            display: "block",
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.85)",
-            zIndex: 999,
-          }}
-        >
-          <div
+      <div style={styles.chainBar}>
+        {chains.map((c) => (
+          <button
+            key={c.id}
+            onClick={() => setChain(c.id)}
             style={{
-              width: 420,
-              margin: "60px auto",
-              background: "#fff",
-              padding: 10,
-              borderRadius: 10,
-              position: "relative",
+              ...styles.chainBtn,
+              ...(chain === c.id ? styles.chainBtnActive : {}),
+            }}
+            onMouseEnter={(e) => {
+              if (chain !== c.id) e.target.style.color = "var(--foreground)";
+            }}
+            onMouseLeave={(e) => {
+              if (chain !== c.id) e.target.style.color = "var(--foreground-muted)";
             }}
           >
-            <button
-              onClick={() => setShowSwap(false)}
-              style={{
-                position: "absolute",
-                top: 5,
-                right: 5,
-                background: "#ff4d4f",
-                color: "white",
-                borderRadius: "50%",
-                width: 30,
-                height: 30,
-                fontWeight: "bold",
-              }}
-            >
-              ❌
-            </button>
+            {c.label}
+          </button>
+        ))}
+      </div>
 
-            <iframe
-              src="https://jup.ag/swap/SOL-USDC?ref=YOUR_WALLET_ADDRESS"
-              width="100%"
-              height="500"
-            ></iframe>
-          </div>
-        </div>
-      )}
+      <div style={styles.iframeWrapper}>
+        <iframe
+          title="DexScreener Charts"
+          src={`https://dexscreener.com/${chain}`}
+          width="100%"
+          height="700"
+          style={{ border: "none", display: "block" }}
+        />
+      </div>
     </div>
   );
 }

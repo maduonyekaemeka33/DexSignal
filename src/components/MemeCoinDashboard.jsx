@@ -126,7 +126,17 @@ const styles = {
   },
 };
 
-function MemeCoinDashboard() {
+// Ethereum contract addresses for popular meme coins (used for prefill swap)
+const MEME_COIN_CONTRACTS = {
+  "shiba-inu": "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
+  "dogecoin": null, // DOGE is not an ERC-20
+  "pepe": "0x6982508145454Ce325dDbE47a25d4ec3d2311933",
+  "bonk": null, // BONK is SPL
+  "floki-inu": "0xcf0C122c6b73ff809C693DB761e7BaeBe62b6a2E",
+  "dogwifcoin": null, // WIF is SPL
+};
+
+function MemeCoinDashboard({ onSwapToken }) {
   const [coins, setCoins] = useState([]);
   const [tradeAmount, setTradeAmount] = useState(1000);
   const [selectedCoin, setSelectedCoin] = useState(null);
@@ -222,17 +232,49 @@ function MemeCoinDashboard() {
                 ? coin.current_price.toFixed(8)
                 : coin.current_price.toLocaleString()}
             </p>
-            <p
-              style={{
-                ...styles.coinChange,
-                color:
-                  coin.price_change_percentage_24h > 0
-                    ? "var(--primary)"
-                    : "var(--destructive)",
-              }}
-            >
-              24h: {coin.price_change_percentage_24h?.toFixed(2)}%
-            </p>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "4px" }}>
+              <p
+                style={{
+                  ...styles.coinChange,
+                  color:
+                    coin.price_change_percentage_24h > 0
+                      ? "var(--primary)"
+                      : "var(--destructive)",
+                  margin: 0,
+                }}
+              >
+                24h: {coin.price_change_percentage_24h?.toFixed(2)}%
+              </p>
+              {MEME_COIN_CONTRACTS[coin.id] && onSwapToken && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSwapToken(MEME_COIN_CONTRACTS[coin.id]);
+                  }}
+                  style={{
+                    padding: "4px 12px",
+                    borderRadius: "6px",
+                    border: "1px solid var(--primary)",
+                    background: "var(--primary-muted)",
+                    color: "var(--primary)",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.15s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = "var(--primary)";
+                    e.target.style.color = "var(--background)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "var(--primary-muted)";
+                    e.target.style.color = "var(--primary)";
+                  }}
+                >
+                  Swap
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>

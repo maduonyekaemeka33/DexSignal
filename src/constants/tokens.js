@@ -1,4 +1,13 @@
+// ============================================================
+// TOKEN CONSTANTS & ABI DEFINITIONS
+// Contains per-chain token lists, router addresses,
+// wrapped native token addresses, and contract ABIs.
+// ============================================================
+
+/** Common tokens per chainId. The first entry on each chain
+ *  is the native gas token (isNative: true). */
 export const COMMON_TOKENS = {
+  // ---------- Ethereum Mainnet ----------
   1: [
     {
       symbol: "ETH",
@@ -6,6 +15,12 @@ export const COMMON_TOKENS = {
       address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       decimals: 18,
       isNative: true,
+    },
+    {
+      symbol: "WETH",
+      name: "Wrapped Ether",
+      address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      decimals: 18,
     },
     {
       symbol: "USDC",
@@ -18,12 +33,6 @@ export const COMMON_TOKENS = {
       name: "Tether USD",
       address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
       decimals: 6,
-    },
-    {
-      symbol: "WETH",
-      name: "Wrapped Ether",
-      address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-      decimals: 18,
     },
     {
       symbol: "DAI",
@@ -50,6 +59,8 @@ export const COMMON_TOKENS = {
       decimals: 18,
     },
   ],
+
+  // ---------- BNB Smart Chain ----------
   56: [
     {
       symbol: "BNB",
@@ -57,6 +68,12 @@ export const COMMON_TOKENS = {
       address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       decimals: 18,
       isNative: true,
+    },
+    {
+      symbol: "WBNB",
+      name: "Wrapped BNB",
+      address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+      decimals: 18,
     },
     {
       symbol: "BUSD",
@@ -77,6 +94,8 @@ export const COMMON_TOKENS = {
       decimals: 18,
     },
   ],
+
+  // ---------- Polygon ----------
   137: [
     {
       symbol: "MATIC",
@@ -84,6 +103,12 @@ export const COMMON_TOKENS = {
       address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       decimals: 18,
       isNative: true,
+    },
+    {
+      symbol: "WMATIC",
+      name: "Wrapped MATIC",
+      address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+      decimals: 18,
     },
     {
       symbol: "USDC",
@@ -104,6 +129,8 @@ export const COMMON_TOKENS = {
       decimals: 18,
     },
   ],
+
+  // ---------- Arbitrum ----------
   42161: [
     {
       symbol: "ETH",
@@ -111,6 +138,12 @@ export const COMMON_TOKENS = {
       address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       decimals: 18,
       isNative: true,
+    },
+    {
+      symbol: "WETH",
+      name: "Wrapped Ether",
+      address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      decimals: 18,
     },
     {
       symbol: "USDC",
@@ -125,6 +158,8 @@ export const COMMON_TOKENS = {
       decimals: 18,
     },
   ],
+
+  // ---------- Base ----------
   8453: [
     {
       symbol: "ETH",
@@ -132,6 +167,12 @@ export const COMMON_TOKENS = {
       address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       decimals: 18,
       isNative: true,
+    },
+    {
+      symbol: "WETH",
+      name: "Wrapped Ether",
+      address: "0x4200000000000000000000000000000000000006",
+      decimals: 18,
     },
     {
       symbol: "USDC",
@@ -142,14 +183,32 @@ export const COMMON_TOKENS = {
   ],
 };
 
+// ============================================================
+// ROUTER ADDRESSES (Uniswap V2 / PancakeSwap V2 style)
+// ============================================================
 export const ROUTER_ADDRESSES = {
-  1: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-  56: "0x10ED43C718714eb63d5aA57B78B54704E256024E",
-  137: "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
-  42161: "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
-  8453: "0x2626664c2603336E57B271c5C0b26F421741e481",
+  1: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",      // Uniswap V2
+  56: "0x10ED43C718714eb63d5aA57B78B54704E256024E",     // PancakeSwap V2
+  137: "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",    // QuickSwap
+  42161: "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",  // SushiSwap
+  8453: "0x2626664c2603336E57B271c5C0b26F421741e481",    // BaseSwap
 };
 
+// ============================================================
+// WRAPPED NATIVE TOKEN ADDRESS per chain
+// Used to build swap paths (native <-> ERC-20).
+// ============================================================
+export const WRAPPED_NATIVE = {
+  1: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",      // WETH
+  56: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",     // WBNB
+  137: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",    // WMATIC
+  42161: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",   // WETH
+  8453: "0x4200000000000000000000000000000000000006",     // WETH
+};
+
+// ============================================================
+// ERC-20 ABI (read/write functions we need)
+// ============================================================
 export const ERC20_ABI = [
   "function approve(address spender, uint256 amount) public returns (bool)",
   "function allowance(address owner, address spender) view returns (uint256)",
@@ -160,10 +219,23 @@ export const ERC20_ABI = [
   "function totalSupply() view returns (uint256)",
 ];
 
+// ============================================================
+// UNISWAP V2 ROUTER ABI (all swap variants + getAmountsOut)
+// Includes "SupportingFeeOnTransferTokens" versions for
+// tokens that have a transfer tax / fee.
+// ============================================================
 export const ROUTER_ABI = [
-  "function swap(address tokenIn, address tokenOut, uint256 amountIn, uint256 minAmountOut, uint256 deadline)",
+  // --- read ---
+  "function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts)",
+  "function WETH() external pure returns (address)",
+
+  // --- standard swaps ---
   "function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)",
   "function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)",
   "function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts)",
-  "function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts)",
+
+  // --- fee-on-transfer / tax token swaps ---
+  "function swapExactTokensForTokensSupportingFeeOnTransferTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external",
+  "function swapExactETHForTokensSupportingFeeOnTransferTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable",
+  "function swapExactTokensForETHSupportingFeeOnTransferTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external",
 ];

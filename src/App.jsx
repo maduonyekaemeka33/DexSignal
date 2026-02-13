@@ -8,15 +8,22 @@ import ApprovalManager from "./components/ApprovalManager";
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState("swap");
+  const [prefillToken, setPrefillToken] = useState(null);
+
+  // Called from the dashboard when a user clicks a token to swap
+  const handleSwapToken = (tokenAddress) => {
+    setPrefillToken(tokenAddress);
+    setCurrentPage("swap");
+  };
 
   const renderPage = () => {
     switch (currentPage) {
       case "swap":
-        return <SwapPage />;
+        return <SwapPage prefillTokenAddress={prefillToken} />;
       case "dashboard":
         return (
           <div style={{ padding: "20px 16px", maxWidth: "1200px", margin: "0 auto" }}>
-            <MemeCoinDashboard />
+            <MemeCoinDashboard onSwapToken={handleSwapToken} />
           </div>
         );
       case "charts":
@@ -28,7 +35,7 @@ function AppContent() {
       case "approvals":
         return <ApprovalManager />;
       default:
-        return <SwapPage />;
+        return <SwapPage prefillTokenAddress={prefillToken} />;
     }
   };
 

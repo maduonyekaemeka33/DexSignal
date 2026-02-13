@@ -97,6 +97,7 @@ export default function Header({ currentPage, onPageChange }) {
     { id: "dashboard", label: "Dashboard" },
     { id: "charts", label: "Charts" },
     { id: "approvals", label: "Approvals" },
+    { id: "fund", label: "Fund" },
   ];
 
   return (

@@ -5,6 +5,7 @@ import SwapPage from "./components/SwapPage";
 import MemeCoinDashboard from "./components/MemeCoinDashboard";
 import DexScreenerIframe from "./components/DexScreenerIframe";
 import ApprovalManager from "./components/ApprovalManager";
+import FundingWidget from "./components/FundingWidget";
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState("swap");
@@ -34,6 +35,8 @@ function AppContent() {
         );
       case "approvals":
         return <ApprovalManager />;
+      case "fund":
+        return <FundingWidget />;
       default:
         return <SwapPage prefillTokenAddress={prefillToken} />;
     }
